@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Bulgaria - optical research backbone</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="data/bulgaria-boundary.js" defer></script>
+    <script src="app.js?v=20260506-topology-note" defer></script>
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow" data-i18n="eyebrow">National research network</p>
+          <h1 data-i18n="heading">Bulgaria - optical research backbone</h1>
+        </div>
+        <div class="network-pill" aria-live="polite">
+          <span class="status-dot" aria-hidden="true"></span>
+          <span id="activeSummary">12 x 100Gb + 1 x 1Gb</span>
+        </div>
+      </header>
+
+      <main class="workspace">
+        <section class="map-stage" aria-label="Interactive map of Bulgaria - optical research backbone">
+          <svg
+            id="networkMap"
+            viewBox="0 0 1200 760"
+            role="img"
+            aria-labelledby="mapTitle mapDescription"
+          >
+            <title id="mapTitle" data-i18n="mapTitle">Bulgaria - optical research backbone</title>
+            <desc id="mapDescription" data-i18n="mapDescription">
+              Sofia connects through Blagoevgrad, Plovdiv, Stara Zagora, Sliven, Shumen, Varna,
+              Ruse, Svishtov, Veliko Turnovo, Pleven, Dolna Mitropolia, and back to Sofia.
+              Rozhen connects to Plovdiv at 1Gb.
+            </desc>
+            <defs>
+              <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+                <feDropShadow dx="0" dy="10" stdDeviation="11" flood-color="#244035" flood-opacity="0.14" />
+              </filter>
+            </defs>
+            <rect class="map-base" x="0" y="0" width="1200" height="760" rx="0"></rect>
+            <g id="backgroundLayer"></g>
+            <g id="linkLayer"></g>
+            <g id="cityLayer"></g>
+          </svg>
+          <div id="tooltip" class="tooltip" role="status" hidden></div>
+          <div id="cityPopup" class="city-popup" hidden></div>
+          <button id="returnMapButton" class="return-map-button" type="button" aria-label="Return" hidden>
+            <span class="return-map-icon" aria-hidden="true">
+              <svg viewBox="0 0 64 42" focusable="false">
+                <path d="M7 23 L11 11 L20 8 L27 12 L37 10 L48 14 L57 21 L52 31 L39 33 L29 30 L19 35 L10 31 Z"></path>
+              </svg>
+            </span>
+          </button>
+          <p class="visualization-note" data-i18n="visualizationNote">
+            Note: This is an approximate visualization at a logical level and this map does not claim to be reliable in distances or actual implementation of routes, but only aims to give a general idea of the network topology
+          </p>
+        </section>
+
+        <aside class="control-panel" aria-label="Network controls and route details">
+          <section class="panel-section">
+            <div class="metric-grid">
+              <div class="metric">
+                <span class="metric-value">13</span>
+                <span class="metric-label" data-i18n="cities">Cities</span>
+              </div>
+              <div class="metric">
+                <span class="metric-value">13</span>
+                <span class="metric-label" data-i18n="links">Links</span>
+              </div>
+              <div class="metric">
+                <span class="metric-value">100Gb</span>
+                <span class="metric-label" data-i18n="capacity">Max. Capacity</span>
+              </div>
+            </div>
+            <div class="language-compact" role="group" aria-label="Language choice">
+              <button id="languageBgBtn" type="button">BG</button>
+              <button id="languageEnBtn" type="button" class="active">ENG</button>
+            </div>
+          </section>
+
+          <section class="panel-section">
+            <h2 data-i18n="controls">Controls</h2>
+            <div class="control-stack">
+              <label class="toggle-row">
+                <span data-i18n="animateTraffic">Animate traffic</span>
+                <input id="animateToggle" type="checkbox" checked />
+              </label>
+
+              <label class="toggle-row">
+                <span data-i18n="rrpFunded">RRP funded</span>
+                <input id="rrpToggle" type="checkbox" />
+              </label>
+
+              <label class="range-row" for="speedRange">
+                <span data-i18n="flowSpeed">Flow speed</span>
+                <input id="speedRange" type="range" min="0.6" max="2.4" step="0.1" value="2.2" />
+              </label>
+            </div>
+          </section>
+
+          <section class="panel-section legend-section">
+            <h2 data-i18n="legend">Legend</h2>
+            <div id="legendList" class="legend-list">
+              <div class="legend-row">
+                <span class="legend-line legend-100" aria-hidden="true"></span>
+                <span data-i18n="legend100">100Gb</span>
+              </div>
+              <div class="legend-row">
+                <span class="legend-node legend-node-academic" aria-hidden="true"></span>
+                <span data-i18n="legendAcademicNode">Research node</span>
+              </div>
+              <div class="legend-row">
+                <span class="legend-line legend-1" aria-hidden="true"></span>
+                <span data-i18n="legend1">1Gb</span>
+              </div>
+              <div class="legend-row">
+                <span class="legend-node legend-node-ring" aria-hidden="true"></span>
+                <span data-i18n="legendRingNode">City ring</span>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel-section selected-section" aria-live="polite">
+            <h2 data-i18n="selectedSegment">Selected Segment</h2>
+            <div id="selectedDetails" class="selected-details"></div>
+          </section>
+        </aside>
+      </main>
+    </div>
+  </body>
+</html>

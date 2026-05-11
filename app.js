@@ -9,7 +9,8 @@ const cities = [
   { name: "Varna", bg: "Варна", lat: 43.2141, lng: 27.9147, label: [-14, 24] },
   { name: "Ruse", bg: "Русе", lat: 43.8356, lng: 25.9657, label: [0, -25] },
   { name: "Svishtov", bg: "Свищов", lat: 43.6187, lng: 25.3506, label: [-5, -24] },
-  { name: "Veliko Turnovo", bg: "Велико Търново", lat: 43.0757, lng: 25.6172, label: [16, 31] },
+  { name: "Veliko Turnovo", bg: "Велико Търново", lat: 43.0757, lng: 25.6172, label: [65, -18], labelEn: [57, -18] },
+  { name: "Gabrovo", bg: "Габрово", lat: 42.8747, lng: 25.3189, label: [0, 32] },
   { name: "Pleven", bg: "Плевен", lat: 43.417, lng: 24.6067, label: [18, 32] },
   { name: "Dolna Mitropolia", bg: "Долна Митрополия", lat: 43.4668, lng: 24.5339, label: [-5, -25] },
   { name: "Rozhen", bg: "Рожен", lat: 41.6936, lng: 24.7381, label: [0, 32] }
@@ -64,6 +65,14 @@ const cityDetails = {
     website: "https://www.af-acad.bg/",
     image: "https://www.af-acad.bg/Images/logo3.png"
   },
+  Gabrovo: {
+    name: {
+      en: "Technical University - Gabrovo",
+      bg: "Технически университет - Габрово"
+    },
+    website: "https://www.tugab.bg/",
+    image: "https://www.tugab.bg/images/Logo-bg.png"
+  },
   Rozhen: {
     name: {
       en: "National Astronomical Observatory Rozhen",
@@ -95,7 +104,7 @@ const extraLinks = [
 const links = [...ringLinks, ...extraLinks];
 const flowLineOffset = 1.45;
 
-const rrpFundedCities = new Set(["Blagoevgrad", "Dolna Mitropolia", "Pleven", "Svishtov", "Ruse"]);
+const rrpFundedCities = new Set(["Blagoevgrad", "Dolna Mitropolia", "Pleven", "Svishtov", "Ruse", "Gabrovo"]);
 
 const bounds = {
   minLng: 22.18,
@@ -1388,7 +1397,7 @@ const translations = {
     varnaMapTitle: "Varna - optical research ring",
     sofiaMapTitle: "Sofia - optical research ring",
     mapDescription:
-      "Sofia connects through Blagoevgrad, Plovdiv, Sliven, Shumen, Varna, Ruse, Svishtov, Veliko Turnovo, Pleven, Dolna Mitropolia, and back to Sofia. Rozhen connects to Plovdiv at 1Gb.",
+      "Sofia connects through Blagoevgrad, Plovdiv, Sliven, Shumen, Varna, Ruse, Svishtov, Veliko Turnovo, Gabrovo, Pleven, Dolna Mitropolia, and back to Sofia. Rozhen connects to Plovdiv at 1Gb.",
     plovdivMapDescription:
       "Plovdiv city map with five academic network nodes, three 100Gb links, and two 10Gb links from TU-Sofia, Plovdiv Branch.",
     shumenMapDescription:
@@ -1424,7 +1433,7 @@ const translations = {
     selectedHint: "Click a network line to view its capacity.",
     routeConnector: "to",
     capacityLine: "Capacity",
-    activeSummary: "11 x 100Gb + 1 x 1Gb",
+    activeSummary: "12 x 100Gb + 1 x 1Gb",
     plovdivActiveSummary: "3 x 100Gb + 2 x 10Gb",
     shumenActiveSummary: "3 x 100Gb + 1 x 10Gb",
     velikoTurnovoActiveSummary: "3 x 100Gb + 1 x 10Gb",
@@ -1468,7 +1477,7 @@ const translations = {
     varnaMapTitle: "Варна - оптичен изследователски пръстен",
     sofiaMapTitle: "София - оптичен изследователски пръстен",
     mapDescription:
-      "София се свързва през Благоевград, Пловдив, Сливен, Шумен, Варна, Русе, Свищов, Велико Търново, Плевен, Долна Митрополия и обратно към София. Рожен е свързан към Пловдив с 1Gb.",
+      "София се свързва през Благоевград, Пловдив, Сливен, Шумен, Варна, Русе, Свищов, Велико Търново, Габрово, Плевен, Долна Митрополия и обратно към София. Рожен е свързан към Пловдив с 1Gb.",
     plovdivMapDescription:
       "Градска карта на Пловдив с пет академични възела, три 100Gb връзки и две 10Gb връзки от ТУ-София, филиал Пловдив.",
     shumenMapDescription:
@@ -1504,7 +1513,7 @@ const translations = {
     selectedHint: "Натиснете линия от мрежата, за да видите капацитета.",
     routeConnector: "към",
     capacityLine: "Капацитет",
-    activeSummary: "11 x 100Gb + 1 x 1Gb",
+    activeSummary: "12 x 100Gb + 1 x 1Gb",
     plovdivActiveSummary: "3 x 100Gb + 2 x 10Gb",
     shumenActiveSummary: "3 x 100Gb + 1 x 10Gb",
     velikoTurnovoActiveSummary: "3 x 100Gb + 1 x 10Gb",
@@ -1579,6 +1588,14 @@ function t(key) {
 function displayCityName(cityName) {
   const city = cityByName.get(cityName);
   return currentLanguage === "bg" ? city.bg : city.name;
+}
+
+function cityLabelOffset(city) {
+  return currentLanguage === "en" && city.labelEn ? city.labelEn : city.label;
+}
+
+function cityLabelAnchor(labelOffset) {
+  return labelOffset[0] < -10 ? "end" : "middle";
 }
 
 function isCityDetailView(view = currentView) {
@@ -2055,6 +2072,7 @@ function drawLinks() {
 function drawCities() {
   cities.forEach((city) => {
     const point = project(city.lng, city.lat);
+    const labelOffset = cityLabelOffset(city);
     const nodeTypeClass = underConstructionCities.has(city.name) ? "ring-node" : "academic-node";
     const group = createSvgElement("g", {
       class: `city-node ${nodeTypeClass}${rrpFundingClass(city.name)}`,
@@ -2078,9 +2096,9 @@ function drawCities() {
     });
     const label = createSvgElement("text", {
       class: "city-label",
-      x: point.x + city.label[0],
-      y: point.y + city.label[1],
-      "text-anchor": city.label[0] < -10 ? "end" : "middle"
+      x: point.x + labelOffset[0],
+      y: point.y + labelOffset[1],
+      "text-anchor": cityLabelAnchor(labelOffset)
     });
     label.textContent = displayCityName(city.name);
 
@@ -2344,6 +2362,14 @@ function updateCityLabels() {
       if (isCityDetailView() && currentDetailNodeById().has(cityName)) {
         setSvgTextLines(label, displayDetailLabel(cityName));
       } else {
+        const city = cityByName.get(cityName);
+        if (city) {
+          const point = project(city.lng, city.lat);
+          const labelOffset = cityLabelOffset(city);
+          label.setAttribute("x", point.x + labelOffset[0]);
+          label.setAttribute("y", point.y + labelOffset[1]);
+          label.setAttribute("text-anchor", cityLabelAnchor(labelOffset));
+        }
         label.textContent = displayPointName(cityName);
       }
     }

@@ -338,17 +338,19 @@ h2 {
 }
 
 .city-node {
-  cursor: pointer;
+  cursor: default;
 }
 
 .city-halo {
   fill: rgba(216, 79, 62, 0.15);
+  pointer-events: none;
 }
 
 .city-dot {
   fill: var(--city);
   stroke: #fffaf2;
   stroke-width: 3;
+  cursor: pointer;
 }
 
 .city-node.academic-node .city-halo {

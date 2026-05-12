@@ -845,10 +845,10 @@ const sofiaNodes = [
     labelName: ["Sofia", "University"],
     labelBg: ["Софийски", "университет"],
     address: "бул. Цар Освободител 15",
-    lat: 42.6935364,
-    lng: 23.33528,
-    label: [27, 9],
-    anchor: "start"
+    lat: 42.6956732,
+    lng: 23.331538,
+    label: [-18, -14],
+    anchor: "end"
   },
   {
     id: "so-vtu",
@@ -991,7 +991,7 @@ const sofiaNodes = [
     address: "бул. Евлоги и Христо Георгиеви 82",
     lat: 42.6904804,
     lng: 23.3481498,
-    label: [33, 4],
+    label: [33, 0],
     anchor: "start"
   },
   {
@@ -1001,10 +1001,10 @@ const sofiaNodes = [
     labelName: ["NAA"],
     labelBg: ["НХА"],
     address: "ул. Шипка 1",
-    lat: 42.6950252,
-    lng: 23.3323,
-    label: [-18, -14],
-    anchor: "end"
+    lat: 42.6935364,
+    lng: 23.33528,
+    label: [24, -7],
+    anchor: "start"
   },
   {
     id: "so-equinix-so2",
@@ -1059,7 +1059,6 @@ const sofiaNodes = [
 const sofiaLinks = [
   { id: "so-meu-tu", from: "so-meu", to: "so-tu-sofia", capacityGb: 100 },
   { id: "so-meu-military", from: "so-meu", to: "so-military-academy", capacityGb: 100 },
-  { id: "so-meu-art", from: "so-meu", to: "so-art-academy", capacityGb: 100 },
   { id: "so-meu-iict", from: "so-meu", to: "so-iict-bas", capacityGb: 100 },
   { id: "so-iict-tu", from: "so-iict-bas", to: "so-tu-sofia", capacityGb: 100 },
   { id: "so-iict-unibit1", from: "so-iict-bas", to: "so-unibit-1", capacityGb: 100 },
@@ -1071,6 +1070,7 @@ const sofiaLinks = [
   { id: "so-unibit1-unibit2", from: "so-unibit-1", to: "so-unibit-2", capacityGb: 100 },
   { id: "so-vtu-su", from: "so-vtu", to: "so-sofia-university", capacityGb: 100 },
   { id: "so-su-art", from: "so-sofia-university", to: "so-art-academy", capacityGb: 100 },
+  { id: "so-art-military", from: "so-art-academy", to: "so-military-academy", capacityGb: 100 },
   { id: "so-mu-fmi", from: "so-mu-sofia", to: "so-fmi", capacityGb: 100 },
   { id: "so-fmi-gate", from: "so-fmi", to: "so-gate", capacityGb: 100 },
   { id: "so-fmi-unwe", from: "so-fmi", to: "so-unwe", capacityGb: 100 },
@@ -1640,6 +1640,28 @@ function displayDetailLabel(nodeId) {
   return currentLanguage === "bg" ? node.labelBg : node.labelName;
 }
 
+function activateCity(city) {
+  clearSelection();
+  if (city.name === "Sofia") {
+    showSofiaMap();
+  } else if (city.name === "Plovdiv") {
+    showPlovdivMap();
+  } else if (city.name === "Shumen") {
+    showShumenMap();
+  } else if (city.name === "Veliko Turnovo") {
+    showVelikoTurnovoMap();
+  } else if (city.name === "Varna") {
+    showVarnaMap();
+  } else {
+    showCityPopup(city.name);
+  }
+}
+
+function activateDetailNode(nodeId) {
+  selectDetailNode(nodeId);
+  showDetailNodePopup(nodeId);
+}
+
 function setSvgTextLines(element, lines) {
   const textLines = Array.isArray(lines) ? lines : [lines];
   const x = element.getAttribute("x");
@@ -2106,40 +2128,14 @@ function drawCities() {
     cityLayer.appendChild(group);
     cityElements.set(city.name, group);
 
-    group.addEventListener("click", (event) => {
+    dot.addEventListener("click", (event) => {
       event.stopPropagation();
-      clearSelection();
-      if (city.name === "Sofia") {
-        showSofiaMap();
-      } else if (city.name === "Plovdiv") {
-        showPlovdivMap();
-      } else if (city.name === "Shumen") {
-        showShumenMap();
-      } else if (city.name === "Veliko Turnovo") {
-        showVelikoTurnovoMap();
-      } else if (city.name === "Varna") {
-        showVarnaMap();
-      } else {
-        showCityPopup(city.name);
-      }
+      activateCity(city);
     });
     group.addEventListener("keydown", (event) => {
       if (event.key === "Enter" || event.key === " ") {
         event.preventDefault();
-        clearSelection();
-        if (city.name === "Sofia") {
-          showSofiaMap();
-        } else if (city.name === "Plovdiv") {
-          showPlovdivMap();
-        } else if (city.name === "Shumen") {
-          showShumenMap();
-        } else if (city.name === "Veliko Turnovo") {
-          showVelikoTurnovoMap();
-        } else if (city.name === "Varna") {
-          showVarnaMap();
-        } else {
-          showCityPopup(city.name);
-        }
+        activateCity(city);
       }
     });
   });
@@ -2181,16 +2177,14 @@ function drawDetailNodes() {
     cityLayer.appendChild(group);
     cityElements.set(node.id, group);
 
-    group.addEventListener("click", (event) => {
+    dot.addEventListener("click", (event) => {
       event.stopPropagation();
-      selectDetailNode(node.id);
-      showDetailNodePopup(node.id);
+      activateDetailNode(node.id);
     });
     group.addEventListener("keydown", (event) => {
       if (event.key === "Enter" || event.key === " ") {
         event.preventDefault();
-        selectDetailNode(node.id);
-        showDetailNodePopup(node.id);
+        activateDetailNode(node.id);
       }
     });
   });

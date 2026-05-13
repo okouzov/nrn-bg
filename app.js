@@ -756,14 +756,15 @@ const sofiaContour = [
 const sofiaNodes = [
   {
     id: "so-meu",
-    name: "Ministry of e-Government",
-    bg: "МЕУ",
-    labelName: ["MEG"],
-    labelBg: ["МЕУ"],
+    name: "MIDT",
+    bg: "МИДТ",
+    labelName: ["MIDT"],
+    labelBg: ["МИДТ"],
     address: "ул. Гурко 26",
     lat: 42.6934644,
     lng: 23.3249726,
     label: [-20, -8],
+    labelEn: [-20, 22],
     anchor: "end"
   },
   {
@@ -956,6 +957,7 @@ const sofiaNodes = [
     lat: 42.6928255,
     lng: 23.3080473,
     label: [24, -10],
+    labelEn: [9, -25],
     anchor: "start"
   },
   {
@@ -1109,10 +1111,10 @@ const sofiaNodeById = new Map(sofiaNodes.map((node) => [node.id, node]));
 const sofiaNodeDetails = {
   "so-meu": {
     name: {
-      en: "Ministry of e-Government",
-      bg: "Министерство на електронното управление"
+      en: "Ministry of Innovation and Digital Transformation",
+      bg: "Министерство на иновациите и дигиталната трансформация"
     },
-    website: "https://www.egov.bg/",
+    website: "https://midt.bg/",
     image: "https://upload.wikimedia.org/wikipedia/commons/2/24/Coat_of_arms_of_Bulgaria.svg"
   },
   "so-iict-bas": {
@@ -1663,6 +1665,14 @@ function displayDetailLabel(nodeId) {
   return currentLanguage === "bg" ? node.labelBg : node.labelName;
 }
 
+function detailLabelOffset(node) {
+  return currentLanguage === "en" && node.labelEn ? node.labelEn : node.label;
+}
+
+function detailLabelAnchor(node, labelOffset) {
+  return node.anchor ?? (labelOffset[0] < -10 ? "end" : "start");
+}
+
 function activateCity(city) {
   clearSelection();
   if (city.name === "Sofia") {
@@ -2167,6 +2177,7 @@ function drawCities() {
 function drawDetailNodes() {
   currentDetailNodes().forEach((node) => {
     const point = activePointGetter(node.id);
+    const labelOffset = detailLabelOffset(node);
     const nodeTypeClass = detailNodeTypeClass(node.id);
     const group = createSvgElement("g", {
       class: `city-node ${nodeTypeClass} plovdiv-node${rrpFundingClass(node.id)}`,
@@ -2190,9 +2201,9 @@ function drawDetailNodes() {
     });
     const label = createSvgElement("text", {
       class: "city-label plovdiv-label",
-      x: point.x + node.label[0],
-      y: point.y + node.label[1],
-      "text-anchor": node.anchor ?? (node.label[0] < -10 ? "end" : "start")
+      x: point.x + labelOffset[0],
+      y: point.y + labelOffset[1],
+      "text-anchor": detailLabelAnchor(node, labelOffset)
     });
     setSvgTextLines(label, displayDetailLabel(node.id));
 
@@ -2377,6 +2388,12 @@ function updateCityLabels() {
     const label = element.querySelector(".city-label");
     if (label) {
       if (isCityDetailView() && currentDetailNodeById().has(cityName)) {
+        const node = currentDetailNodeById().get(cityName);
+        const point = activePointGetter(cityName);
+        const labelOffset = detailLabelOffset(node);
+        label.setAttribute("x", point.x + labelOffset[0]);
+        label.setAttribute("y", point.y + labelOffset[1]);
+        label.setAttribute("text-anchor", detailLabelAnchor(node, labelOffset));
         setSvgTextLines(label, displayDetailLabel(cityName));
       } else {
         const city = cityByName.get(cityName);

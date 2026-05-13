@@ -787,7 +787,19 @@ const sofiaNodes = [
     address: "бул. Климент Охридски 8",
     lat: 42.6552239,
     lng: 23.3550724,
-    label: [20, 30],
+    label: [24, 15],
+    anchor: "start"
+  },
+  {
+    id: "so-uctm",
+    name: "UCTM",
+    bg: "ХТМУ",
+    labelName: ["UCTM"],
+    labelBg: ["ХТМУ"],
+    address: "бул. Климент Охридски 8",
+    lat: 42.6513479,
+    lng: 23.3546914,
+    label: [28, 4],
     anchor: "start"
   },
   {
@@ -1076,6 +1088,8 @@ const sofiaLinks = [
   { id: "so-fmi-unwe", from: "so-fmi", to: "so-unwe", capacityGb: 100 },
   { id: "so-unwe-utp", from: "so-unwe", to: "so-utp", capacityGb: 100 },
   { id: "so-unwe-tu", from: "so-unwe", to: "so-tu-sofia", capacityGb: 100 },
+  { id: "so-tu-uctm", from: "so-tu-sofia", to: "so-uctm", capacityGb: 100 },
+  { id: "so-uctm-unwe", from: "so-uctm", to: "so-unwe", capacityGb: 100 },
   { id: "so-tu-utp", from: "so-tu-sofia", to: "so-utp", capacityGb: 100 },
   { id: "so-iict-stp", from: "so-iict-bas", to: "so-sofia-tech-park", capacityGb: 100 },
   { id: "so-iict-equinix", from: "so-iict-bas", to: "so-equinix-so2", capacityGb: 200, capacityLabel: "2x100Gb" },
@@ -1116,6 +1130,14 @@ const sofiaNodeDetails = {
     },
     website: "https://www.tu-sofia.bg/",
     image: "https://nchdc.acad.bg/wp-content/uploads/3_TU_bg_n.png"
+  },
+  "so-uctm": {
+    name: {
+      en: "University of Chemical Technology and Metallurgy",
+      bg: "Химикотехнологичен и металургичен университет"
+    },
+    website: "https://uctm.edu/",
+    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcShlXyscT2BwI1Fng-52Io-p5LcGCMZYx5Q0A&s"
   },
   "so-utp": {
     name: {
@@ -1365,7 +1387,8 @@ const rrpFundedDetailNodes = {
     "so-unwe",
     "so-utp",
     "so-fmi",
-    "so-mu-sofia"
+    "so-mu-sofia",
+    "so-uctm"
   ])
 };
 
@@ -1407,7 +1430,7 @@ const translations = {
     varnaMapDescription:
       "Varna city map with seven points of presence, six 100Gb links between the main institutions, and one 10Gb commodity link from the Naval Academy to Backup internet.",
     sofiaMapDescription:
-      "Sofia city map with 25 points of presence, 22 100Gb research links, three 100Gb peering links, one 2x100Gb link, and five 10Gb access links.",
+      "Sofia city map with 26 points of presence, 24 100Gb research links, three 100Gb peering links, one 2x100Gb link, and five 10Gb access links.",
     cities: "Cities",
     nodes: "Nodes",
     links: "Links",
@@ -1438,7 +1461,7 @@ const translations = {
     shumenActiveSummary: "3 x 100Gb + 1 x 10Gb",
     velikoTurnovoActiveSummary: "3 x 100Gb + 1 x 10Gb",
     varnaActiveSummary: "6 x 100Gb + 1 x 10Gb",
-    sofiaActiveSummary: "22 x 100Gb + 3 x 100Gb peering + 1 x 2x100Gb + 5 x 10Gb",
+    sofiaActiveSummary: "24 x 100Gb + 3 x 100Gb peering + 1 x 2x100Gb + 5 x 10Gb",
     node: "node",
     academicNode: "Research node",
     website: "Website",
@@ -1487,7 +1510,7 @@ const translations = {
     varnaMapDescription:
       "Градска карта на Варна със седем точки на присъствие, шест 100Gb връзки между основните институции и една 10Gb интернет връзка от ВВМУ към Бекъп интернет.",
     sofiaMapDescription:
-      "Градска карта на София с 25 точки на присъствие, 22 изследователски 100Gb връзки, три 100Gb пиъринг връзки, една 2x100Gb връзка и пет 10Gb връзки.",
+      "Градска карта на София с 26 точки на присъствие, 24 изследователски 100Gb връзки, три 100Gb пиъринг връзки, една 2x100Gb връзка и пет 10Gb връзки.",
     cities: "Града",
     nodes: "Възела",
     links: "Връзки",
@@ -1518,7 +1541,7 @@ const translations = {
     shumenActiveSummary: "3 x 100Gb + 1 x 10Gb",
     velikoTurnovoActiveSummary: "3 x 100Gb + 1 x 10Gb",
     varnaActiveSummary: "6 x 100Gb + 1 x 10Gb",
-    sofiaActiveSummary: "22 x 100Gb + 3 x 100Gb пиъринг + 1 x 2x100Gb + 5 x 10Gb",
+    sofiaActiveSummary: "24 x 100Gb + 3 x 100Gb пиъринг + 1 x 2x100Gb + 5 x 10Gb",
     node: "възел",
     academicNode: "Изследователски възел",
     website: "Уеб сайт",

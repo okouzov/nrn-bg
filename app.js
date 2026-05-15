@@ -1,4 +1,5 @@
 const capacityGb = 100;
+const fallbackPopupImage = "https://upload.wikimedia.org/wikipedia/commons/2/24/Coat_of_arms_of_Bulgaria.svg";
 
 const cities = [
   { name: "Sofia", bg: "София", lat: 42.6977, lng: 23.3219, label: [-14, -22] },
@@ -239,7 +240,7 @@ const plovdivNodeDetails = {
       bg: "Областна администрация - Пловдив"
     },
     website: "https://pd.government.bg/",
-    image: "https://upload.wikimedia.org/wikipedia/commons/2/24/Coat_of_arms_of_Bulgaria.svg"
+    image: fallbackPopupImage
   },
   "tu-plovdiv": {
     name: {
@@ -354,7 +355,16 @@ const shumenLinks = [
   { id: "sh-nvu-backup", from: "nvu-shumen", to: "sh-backup-internet", capacityGb: 10 }
 ];
 
-const commodityLinkIds = new Set(["pd-tu-evolink", "sh-nvu-backup", "vt-nvu-backup", "va-naval-backup"]);
+const commodityLinkIds = new Set([
+  "pd-tu-evolink",
+  "sh-nvu-backup",
+  "vt-nvu-backup",
+  "va-naval-backup",
+  "pn-univ-backup",
+  "gb-univ-backup",
+  "rs-univ-backup",
+  "dm-academy-backup"
+]);
 
 const shumenNodeById = new Map(shumenNodes.map((node) => [node.id, node]));
 
@@ -365,7 +375,7 @@ const shumenNodeDetails = {
       bg: "Областна администрация - Шумен"
     },
     website: "https://shumenoblast.egov.bg/",
-    image: "https://upload.wikimedia.org/wikipedia/commons/2/24/Coat_of_arms_of_Bulgaria.svg"
+    image: fallbackPopupImage
   },
   "shumen-university": {
     name: {
@@ -503,7 +513,7 @@ const velikoTurnovoNodeDetails = {
       bg: "Областна администрация - Велико Търново"
     },
     website: "https://vt.government.bg/",
-    image: "https://upload.wikimedia.org/wikipedia/commons/2/24/Coat_of_arms_of_Bulgaria.svg"
+    image: fallbackPopupImage
   },
   "vt-university": {
     name: {
@@ -677,7 +687,7 @@ const varnaNodeDetails = {
       bg: "Областна администрация - Варна"
     },
     website: "https://varnaregion.egov.bg/",
-    image: "https://upload.wikimedia.org/wikipedia/commons/2/24/Coat_of_arms_of_Bulgaria.svg"
+    image: fallbackPopupImage
   },
   "va-naval-academy": {
     name: {
@@ -1089,7 +1099,6 @@ const sofiaLinks = [
   { id: "so-fmi-gate", from: "so-fmi", to: "so-gate", capacityGb: 100 },
   { id: "so-fmi-unwe", from: "so-fmi", to: "so-unwe", capacityGb: 100 },
   { id: "so-unwe-utp", from: "so-unwe", to: "so-utp", capacityGb: 100 },
-  { id: "so-unwe-tu", from: "so-unwe", to: "so-tu-sofia", capacityGb: 100 },
   { id: "so-tu-uctm", from: "so-tu-sofia", to: "so-uctm", capacityGb: 100 },
   { id: "so-uctm-unwe", from: "so-uctm", to: "so-unwe", capacityGb: 100 },
   { id: "so-tu-utp", from: "so-tu-sofia", to: "so-utp", capacityGb: 100 },
@@ -1115,7 +1124,7 @@ const sofiaNodeDetails = {
       bg: "Министерство на иновациите и дигиталната трансформация"
     },
     website: "https://midt.bg/",
-    image: "https://upload.wikimedia.org/wikipedia/commons/2/24/Coat_of_arms_of_Bulgaria.svg"
+    image: fallbackPopupImage
   },
   "so-iict-bas": {
     name: {
@@ -1123,7 +1132,7 @@ const sofiaNodeDetails = {
       bg: "Институт по информационни и комуникационни технологии - БАН"
     },
     website: "https://www.iict.bas.bg/",
-    image: "https://www.google.com/s2/favicons?domain=iict.bas.bg&sz=128"
+    image: fallbackPopupImage
   },
   "so-tu-sofia": {
     name: {
@@ -1147,7 +1156,7 @@ const sofiaNodeDetails = {
       bg: "Висше училище по телекомуникации и пощи"
     },
     website: "https://www.utp.bg/",
-    image: "https://www.google.com/s2/favicons?domain=utp.bg&sz=128"
+    image: fallbackPopupImage
   },
   "so-unwe": {
     name: {
@@ -1187,7 +1196,7 @@ const sofiaNodeDetails = {
       bg: "ВТУ Тодор Каблешков"
     },
     website: "https://www.vtu.bg/",
-    image: "https://www.google.com/s2/favicons?domain=vtu.bg&sz=128"
+    image: fallbackPopupImage
   },
   "so-unibit-1": {
     name: {
@@ -1219,7 +1228,7 @@ const sofiaNodeDetails = {
       bg: "София Тех Парк"
     },
     website: "https://sofiatech.bg/",
-    image: "https://www.google.com/s2/favicons?domain=sofiatech.bg&sz=128"
+    image: fallbackPopupImage
   },
   "so-kkipko": {
     name: {
@@ -1319,6 +1328,472 @@ const sofiaNodeDetails = {
   }
 };
 
+const simpleAccessMapFrame = plovdivMapFrame;
+
+const simpleAccessContour = [
+  [8, 50],
+  [12, 69],
+  [28, 82],
+  [52, 86],
+  [77, 79],
+  [91, 61],
+  [88, 40],
+  [70, 25],
+  [43, 18],
+  [19, 28]
+];
+
+function projectSimpleAccess(lng, lat) {
+  const x = simpleAccessMapFrame.x + (lng / 100) * simpleAccessMapFrame.width;
+  const y = simpleAccessMapFrame.y + ((100 - lat) / 100) * simpleAccessMapFrame.height;
+  return { x, y };
+}
+
+function makeSimpleAccessView(config) {
+  const nodes = config.nodes.map((node) => ({
+    type: "academic-node",
+    ...node
+  }));
+  const nodeById = new Map(nodes.map((node) => [node.id, node]));
+  const links = config.links.map((link, index) => ({ index, ...link }));
+  const nodeDetails = Object.fromEntries(
+    nodes.map((node) => [
+      node.id,
+      {
+        name: node.detailName ?? { en: node.name, bg: node.bg },
+        website: node.website,
+        image: node.image
+      }
+    ])
+  );
+
+  return {
+    nodes,
+    links,
+    nodeById,
+    nodeDetails,
+    contour: config.contour ?? simpleAccessContour,
+    projector: projectSimpleAccess,
+    pointGetter: (nodeId) => {
+      const node = nodeById.get(nodeId);
+      return projectSimpleAccess(node.lng, node.lat);
+    },
+    summaryKey: `${config.viewName}ActiveSummary`
+  };
+}
+
+const simpleAccessViewConfigs = [
+  {
+    viewName: "blagoevgrad",
+    nodes: [
+      {
+        id: "bl-university",
+        name: "South-West University",
+        bg: "ЮЗУ",
+        labelName: ["South-West", "University"],
+        labelBg: ["ЮЗУ"],
+        detailName: {
+          en: 'South-West University "Neofit Rilski"',
+          bg: 'Югозападен университет "Неофит Рилски"'
+        },
+        address: 'Благоевград, ул. "Иван Михайлов" 66',
+        website: "https://www.swu.bg/",
+        image: "https://www.swu.bg/images/images/Logo/Logo_New.png",
+        lng: 40,
+        lat: 58,
+        label: [-30, -24],
+        anchor: "end"
+      },
+      {
+        id: "bl-regional-admin",
+        name: "Regional Admin",
+        bg: "ОА-Благоевград",
+        labelName: ["Regional", "Admin"],
+        labelBg: ["ОА", "Благоевград"],
+        detailName: {
+          en: "Regional Administration - Blagoevgrad",
+          bg: "Областна администрация - Благоевград"
+        },
+        address: 'Благоевград, пл. "Георги Измирлиев" 9',
+        website: "https://blagoevgrad.egov.bg/",
+        image: fallbackPopupImage,
+        type: "state-network-node",
+        lng: 66,
+        lat: 58,
+        label: [32, -8],
+        anchor: "start"
+      },
+      {
+        id: "bl-backup",
+        name: "Backup internet",
+        bg: "Бекъп интернет",
+        labelName: ["Backup", "internet"],
+        labelBg: ["Бекъп", "интернет"],
+        detailName: { en: "Backup internet", bg: "Бекъп интернет" },
+        address: "Blagoevgrad backup internet",
+        website: "https://www.evolink.com/",
+        image: "https://www.evolink.com/img/logo.svg",
+        type: "backup-node",
+        lng: 33,
+        lat: 48,
+        label: [-18, 30],
+        anchor: "end"
+      }
+    ],
+    links: [
+      { id: "bl-univ-admin-a", from: "bl-university", to: "bl-regional-admin", capacityGb: 100, routeCurve: -52 },
+      { id: "bl-univ-admin-b", from: "bl-university", to: "bl-regional-admin", capacityGb: 100, routeCurve: 52 },
+      { id: "bl-univ-backup", from: "bl-university", to: "bl-backup", capacityGb: 1, routeCurve: 24 }
+    ]
+  },
+  {
+    viewName: "pleven",
+    nodes: [
+      {
+        id: "pn-university",
+        name: "MU-Pleven",
+        bg: "МУ-Плевен",
+        labelName: ["MU-Pleven"],
+        labelBg: ["МУ-Плевен"],
+        detailName: { en: "Medical University - Pleven", bg: "Медицински университет - Плевен" },
+        address: 'Плевен, бул. "Климент Охридски" 1',
+        website: "https://www.mu-pleven.bg/",
+        image: "https://www.mu-pleven.bg/images/Logo/mu-logo10.png",
+        lng: 42,
+        lat: 58,
+        label: [-30, -24],
+        anchor: "end"
+      },
+      {
+        id: "pn-regional-admin",
+        name: "Regional Admin",
+        bg: "ОА-Плевен",
+        labelName: ["Regional", "Admin"],
+        labelBg: ["ОА", "Плевен"],
+        detailName: { en: "Regional Administration - Pleven", bg: "Областна администрация - Плевен" },
+        address: 'Плевен, пл. "Възраждане" 1',
+        website: "https://www.pleven-oblast.bg/",
+        image: fallbackPopupImage,
+        type: "state-network-node",
+        lng: 66,
+        lat: 58,
+        label: [32, -8],
+        anchor: "start"
+      },
+      {
+        id: "pn-backup",
+        name: "Backup internet",
+        bg: "Бекъп интернет",
+        labelName: ["Backup", "internet"],
+        labelBg: ["Бекъп", "интернет"],
+        detailName: { en: "Backup internet", bg: "Бекъп интернет" },
+        address: "Pleven backup internet",
+        website: "https://www.evolink.com/",
+        image: "https://www.evolink.com/img/logo.svg",
+        type: "backup-node",
+        lng: 35,
+        lat: 48,
+        label: [-18, 30],
+        anchor: "end"
+      }
+    ],
+    links: [
+      { id: "pn-univ-admin-a", from: "pn-university", to: "pn-regional-admin", capacityGb: 100, routeCurve: -52 },
+      { id: "pn-univ-admin-b", from: "pn-university", to: "pn-regional-admin", capacityGb: 100, routeCurve: 52 },
+      { id: "pn-univ-backup", from: "pn-university", to: "pn-backup", capacityGb: 10, routeCurve: 24 }
+    ]
+  },
+  {
+    viewName: "gabrovo",
+    nodes: [
+      {
+        id: "gb-university",
+        name: "TU-Gabrovo",
+        bg: "ТУ-Габрово",
+        labelName: ["TU-Gabrovo"],
+        labelBg: ["ТУ-Габрово"],
+        detailName: { en: "Technical University - Gabrovo", bg: "Технически университет - Габрово" },
+        address: 'Габрово, ул. "Хаджи Димитър" 4',
+        website: "https://www.tugab.bg/",
+        image: "https://www.tugab.bg/images/Logo-bg.png",
+        lng: 42,
+        lat: 58,
+        label: [-30, -24],
+        anchor: "end"
+      },
+      {
+        id: "gb-regional-admin",
+        name: "Regional Admin",
+        bg: "ОА-Габрово",
+        labelName: ["Regional", "Admin"],
+        labelBg: ["ОА", "Габрово"],
+        detailName: { en: "Regional Administration - Gabrovo", bg: "Областна администрация - Габрово" },
+        address: 'Габрово, пл. "Възраждане" 5',
+        website: "https://www.gb.government.bg/",
+        image: fallbackPopupImage,
+        type: "state-network-node",
+        lng: 66,
+        lat: 58,
+        label: [32, -8],
+        anchor: "start"
+      },
+      {
+        id: "gb-backup",
+        name: "Backup internet",
+        bg: "Бекъп интернет",
+        labelName: ["Backup", "internet"],
+        labelBg: ["Бекъп", "интернет"],
+        detailName: { en: "Backup internet", bg: "Бекъп интернет" },
+        address: "Gabrovo backup internet",
+        website: "https://www.evolink.com/",
+        image: "https://www.evolink.com/img/logo.svg",
+        type: "backup-node",
+        lng: 35,
+        lat: 48,
+        label: [-18, 30],
+        anchor: "end"
+      }
+    ],
+    links: [
+      { id: "gb-univ-admin-a", from: "gb-university", to: "gb-regional-admin", capacityGb: 100, routeCurve: -52 },
+      { id: "gb-univ-admin-b", from: "gb-university", to: "gb-regional-admin", capacityGb: 100, routeCurve: 52 },
+      { id: "gb-univ-backup", from: "gb-university", to: "gb-backup", capacityGb: 10, routeCurve: 24 }
+    ]
+  },
+  {
+    viewName: "svishtov",
+    nodes: [
+      {
+        id: "sv-academy",
+        name: "D. A. Tsenov Academy",
+        bg: "СА Свищов",
+        labelName: ["D. A. Tsenov", "Academy"],
+        labelBg: ["Стопанска", "академия"],
+        detailName: { en: 'D. A. Tsenov Academy of Economics', bg: 'Стопанска академия "Димитър А. Ценов"' },
+        address: 'Свищов, ул. "Емануил Чакъров" 2',
+        website: "https://www.uni-svishtov.bg/",
+        image: "https://www.uni-svishtov.bg/images/logo-bg.svg",
+        lng: 42,
+        lat: 58,
+        label: [-30, -24],
+        anchor: "end"
+      },
+      {
+        id: "sv-municipality",
+        name: "Svishtov Municipality",
+        bg: "Община Свищов",
+        labelName: ["Svishtov", "Municipality"],
+        labelBg: ["Община", "Свищов"],
+        detailName: { en: "Svishtov Municipality", bg: "Община Свищов" },
+        address: 'Свищов, ул. "Цанко Церковски" 2',
+        website: "https://www.svishtov.bg/",
+        image: fallbackPopupImage,
+        type: "state-network-node",
+        lng: 66,
+        lat: 58,
+        label: [32, -8],
+        anchor: "start"
+      },
+      {
+        id: "sv-backup",
+        name: "Backup internet",
+        bg: "Бекъп интернет",
+        labelName: ["Backup", "internet"],
+        labelBg: ["Бекъп", "интернет"],
+        detailName: { en: "Backup internet", bg: "Бекъп интернет" },
+        address: "Svishtov backup internet",
+        website: "https://www.evolink.com/",
+        image: "https://www.evolink.com/img/logo.svg",
+        type: "backup-node",
+        lng: 35,
+        lat: 48,
+        label: [-18, 30],
+        anchor: "end"
+      }
+    ],
+    links: [
+      { id: "sv-academy-municipality-a", from: "sv-academy", to: "sv-municipality", capacityGb: 100, routeCurve: -52 },
+      { id: "sv-academy-municipality-b", from: "sv-academy", to: "sv-municipality", capacityGb: 100, routeCurve: 52 },
+      { id: "sv-academy-backup", from: "sv-academy", to: "sv-backup", capacityGb: 1, routeCurve: 24 }
+    ]
+  },
+  {
+    viewName: "ruse",
+    nodes: [
+      {
+        id: "rs-university",
+        name: "University of Ruse",
+        bg: "РУ Русе",
+        labelName: ["University", "of Ruse"],
+        labelBg: ["РУ", "Русе"],
+        detailName: { en: 'University of Ruse "Angel Kanchev"', bg: 'Русенски университет "Ангел Кънчев"' },
+        address: 'Русе, ул. "Студентска" 8',
+        website: "https://www.uni-ruse.bg/",
+        image: "https://www.uni-ruse.bg/SiteAssets/ru-logo-125x140.png",
+        lng: 42,
+        lat: 58,
+        label: [-30, -24],
+        anchor: "end"
+      },
+      {
+        id: "rs-regional-admin",
+        name: "Regional Admin",
+        bg: "ОА-Русе",
+        labelName: ["Regional", "Admin"],
+        labelBg: ["ОА", "Русе"],
+        detailName: { en: "Regional Administration - Ruse", bg: "Областна администрация - Русе" },
+        address: 'Русе, пл. "Свобода" 6',
+        website: "https://ruse.egov.bg/wps/portal/district-ruse",
+        image: fallbackPopupImage,
+        type: "state-network-node",
+        lng: 66,
+        lat: 58,
+        label: [32, -8],
+        anchor: "start"
+      },
+      {
+        id: "rs-backup",
+        name: "Backup internet",
+        bg: "Бекъп интернет",
+        labelName: ["Backup", "internet"],
+        labelBg: ["Бекъп", "интернет"],
+        detailName: { en: "Backup internet - Neterra", bg: "Бекъп интернет - Нетера" },
+        address: "Ruse backup internet",
+        website: "https://neterra.net/",
+        image: "https://www.uni-sofia.bg/var/ezwebin_site/storage/images/media/images/neterra_logo/1421971-1-bul-BG/neterra_logo_imagelarge.jpg",
+        type: "backup-node",
+        lng: 35,
+        lat: 48,
+        label: [-18, 30],
+        anchor: "end"
+      }
+    ],
+    links: [
+      { id: "rs-univ-admin-a", from: "rs-university", to: "rs-regional-admin", capacityGb: 100, routeCurve: -52 },
+      { id: "rs-univ-admin-b", from: "rs-university", to: "rs-regional-admin", capacityGb: 100, routeCurve: 52 },
+      { id: "rs-univ-backup", from: "rs-university", to: "rs-backup", capacityGb: 10, routeCurve: 24 }
+    ]
+  },
+  {
+    viewName: "sliven",
+    nodes: [
+      {
+        id: "sl-university",
+        name: "TU-Sofia Sliven",
+        bg: "ТУ-Сливен",
+        labelName: ["TU-Sofia", "Sliven"],
+        labelBg: ["ТУ-София", "Сливен"],
+        detailName: { en: "Technical University of Sofia, Faculty and College - Sliven", bg: "ТУ-София, Факултет и Колеж - Сливен" },
+        address: "Сливен, бул. Бургаско шосе 59",
+        website: "https://tu-sliven.com/",
+        image: "https://tu-sliven.com/favicon.ico",
+        lng: 42,
+        lat: 58,
+        label: [-30, -24],
+        anchor: "end"
+      },
+      {
+        id: "sl-regional-admin",
+        name: "Regional Admin",
+        bg: "ОА-Сливен",
+        labelName: ["Regional", "Admin"],
+        labelBg: ["ОА", "Сливен"],
+        detailName: { en: "Regional Administration - Sliven", bg: "Областна администрация - Сливен" },
+        address: 'Сливен, ул. "Димитър Добрович" 3',
+        website: "https://regionsliven.com/",
+        image: fallbackPopupImage,
+        type: "state-network-node",
+        lng: 66,
+        lat: 58,
+        label: [32, -8],
+        anchor: "start"
+      }
+    ],
+    links: [{ id: "sl-univ-admin", from: "sl-university", to: "sl-regional-admin", capacityGb: 100 }]
+  },
+  {
+    viewName: "dolnaMitropolia",
+    nodes: [
+      {
+        id: "dm-academy",
+        name: "Air Force Academy",
+        bg: "ВВВУ",
+        labelName: ["Air Force", "Academy"],
+        labelBg: ["ВВВУ"],
+        detailName: {
+          en: 'Bulgarian Air Force Academy "Georgi Benkovski"',
+          bg: 'Висше военновъздушно училище "Георги Бенковски"'
+        },
+        address: 'Долна Митрополия, ул. "Св. Св. Кирил и Методий" 1',
+        website: "https://www.af-acad.bg/",
+        image: "https://www.af-acad.bg/Images/logo3.png",
+        lng: 38,
+        lat: 55,
+        label: [-28, -22],
+        anchor: "end"
+      },
+      {
+        id: "dm-municipality",
+        name: "Dolna Mitropolia Municipality",
+        bg: "Община Долна Митрополия",
+        labelName: ["Dolna Mitropolia", "Municipality"],
+        labelBg: ["Община", "Долна Митрополия"],
+        detailName: { en: "Dolna Mitropolia Municipality", bg: "Община Долна Митрополия" },
+        address: 'Долна Митрополия, ул. "Св. Св. Кирил и Методий" 39',
+        website: "https://www.dolnamitropolia.bg/",
+        image: fallbackPopupImage,
+        type: "state-network-node",
+        lng: 66,
+        lat: 36,
+        label: [30, 12],
+        labelBgOffset: [30, -14],
+        anchor: "start"
+      },
+      {
+        id: "dm-backup",
+        name: "Backup internet",
+        bg: "Бекъп интернет",
+        labelName: ["Backup", "internet"],
+        labelBg: ["Бекъп", "интернет"],
+        detailName: { en: "Backup internet", bg: "Бекъп интернет" },
+        address: "Dolna Mitropolia backup internet",
+        website: "https://www.evolink.com/",
+        image: "https://www.evolink.com/img/logo.svg",
+        type: "backup-node",
+        lng: 52,
+        lat: 55,
+        label: [28, 6],
+        anchor: "start"
+      },
+      {
+        id: "dm-pleven-admin",
+        name: "Regional Admin Pleven",
+        bg: "ОА-Плевен",
+        labelName: ["Regional Admin", "Pleven"],
+        labelBg: ["ОА", "Плевен"],
+        detailName: { en: "Regional Administration - Pleven", bg: "Областна администрация - Плевен" },
+        address: 'Плевен, пл. "Възраждане" 1',
+        website: "https://www.pleven-oblast.bg/",
+        image: fallbackPopupImage,
+        type: "state-network-node",
+        lng: 66,
+        lat: 72,
+        label: [30, -8],
+        anchor: "start"
+      }
+    ],
+    links: [
+      { id: "dm-academy-municipality", from: "dm-academy", to: "dm-municipality", capacityGb: 100 },
+      { id: "dm-academy-pleven-admin", from: "dm-academy", to: "dm-pleven-admin", capacityGb: 100 },
+      { id: "dm-academy-backup", from: "dm-academy", to: "dm-backup", capacityGb: 10 }
+    ]
+  }
+];
+
+const simpleAccessViews = Object.fromEntries(
+  simpleAccessViewConfigs.map((config) => [config.viewName, makeSimpleAccessView(config)])
+);
+
 const detailViews = {
   plovdiv: {
     nodes: plovdivNodes,
@@ -1369,7 +1844,8 @@ const detailViews = {
     projector: projectSofia,
     pointGetter: getSofiaPoint,
     summaryKey: "sofiaActiveSummary"
-  }
+  },
+  ...simpleAccessViews
 };
 
 const rrpFundedDetailNodes = {
@@ -1377,6 +1853,12 @@ const rrpFundedDetailNodes = {
   shumen: new Set(["nvu-shumen", "shumen-university"]),
   velikoTurnovo: new Set(["vt-nvu", "vt-university"]),
   varna: new Set(["va-economics-university", "va-naval-academy", "va-technical-university"]),
+  blagoevgrad: new Set(["bl-university"]),
+  pleven: new Set(["pn-university"]),
+  gabrovo: new Set(["gb-university"]),
+  svishtov: new Set(["sv-academy"]),
+  ruse: new Set(["rs-university"]),
+  dolnaMitropolia: new Set(["dm-academy"]),
   sofia: new Set([
     "so-meu",
     "so-art-academy",
@@ -1396,6 +1878,55 @@ const rrpFundedDetailNodes = {
 
 const translations = {
   en: {
+    blagoevgradPageTitle: "Blagoevgrad - optical research access",
+    plevenPageTitle: "Pleven - optical research access",
+    gabrovoPageTitle: "Gabrovo - optical research access",
+    svishtovPageTitle: "Svishtov - optical research access",
+    rusePageTitle: "Ruse - optical research access",
+    slivenPageTitle: "Sliven - optical research access",
+    dolnaMitropoliaPageTitle: "Dolna Mitropolia - optical research access",
+    blagoevgradHeading: "Blagoevgrad - optical research access",
+    plevenHeading: "Pleven - optical research access",
+    gabrovoHeading: "Gabrovo - optical research access",
+    svishtovHeading: "Svishtov - optical research access",
+    ruseHeading: "Ruse - optical research access",
+    slivenHeading: "Sliven - optical research access",
+    dolnaMitropoliaHeading: "Dolna Mitropolia - optical research access",
+    blagoevgradMapAria: "Interactive map of Blagoevgrad - optical research access",
+    plevenMapAria: "Interactive map of Pleven - optical research access",
+    gabrovoMapAria: "Interactive map of Gabrovo - optical research access",
+    svishtovMapAria: "Interactive map of Svishtov - optical research access",
+    ruseMapAria: "Interactive map of Ruse - optical research access",
+    slivenMapAria: "Interactive map of Sliven - optical research access",
+    dolnaMitropoliaMapAria: "Interactive map of Dolna Mitropolia - optical research access",
+    blagoevgradMapTitle: "Blagoevgrad - optical research access",
+    plevenMapTitle: "Pleven - optical research access",
+    gabrovoMapTitle: "Gabrovo - optical research access",
+    svishtovMapTitle: "Svishtov - optical research access",
+    ruseMapTitle: "Ruse - optical research access",
+    slivenMapTitle: "Sliven - optical research access",
+    dolnaMitropoliaMapTitle: "Dolna Mitropolia - optical research access",
+    blagoevgradMapDescription:
+      "Blagoevgrad city map with South-West University, the regional administration, two 100Gb links, and one 1Gb backup internet link.",
+    plevenMapDescription:
+      "Pleven city map with Medical University - Pleven, the regional administration, two 100Gb links, and one 10Gb backup internet link.",
+    gabrovoMapDescription:
+      "Gabrovo city map with Technical University - Gabrovo, the regional administration, two 100Gb links, and one 10Gb backup internet link.",
+    svishtovMapDescription:
+      "Svishtov city map with D. A. Tsenov Academy, the municipality, two 100Gb links, and one 1Gb backup internet link.",
+    ruseMapDescription:
+      "Ruse city map with University of Ruse, the regional administration, two 100Gb links, and one 10Gb backup internet link.",
+    slivenMapDescription:
+      "Sliven city map with TU-Sofia Sliven and the regional administration connected by one 100Gb link.",
+    dolnaMitropoliaMapDescription:
+      "Dolna Mitropolia city map with the Air Force Academy connected to the municipality and Pleven regional administration over two 100Gb links.",
+    blagoevgradActiveSummary: "2 x 100Gb + 1 x 1Gb",
+    plevenActiveSummary: "2 x 100Gb + 1 x 10Gb",
+    gabrovoActiveSummary: "2 x 100Gb + 1 x 10Gb",
+    svishtovActiveSummary: "2 x 100Gb + 1 x 1Gb",
+    ruseActiveSummary: "2 x 100Gb + 1 x 10Gb",
+    slivenActiveSummary: "1 x 100Gb",
+    dolnaMitropoliaActiveSummary: "2 x 100Gb + 1 x 10Gb",
     pageTitle: "Bulgaria - optical research backbone",
     plovdivPageTitle: "Plovdiv - optical research ring",
     shumenPageTitle: "Shumen - optical research ring",
@@ -1432,7 +1963,7 @@ const translations = {
     varnaMapDescription:
       "Varna city map with seven points of presence, six 100Gb links between the main institutions, and one 10Gb commodity link from the Naval Academy to Backup internet.",
     sofiaMapDescription:
-      "Sofia city map with 26 points of presence, 24 100Gb research links, three 100Gb peering links, one 2x100Gb link, and five 10Gb access links.",
+      "Sofia city map with 26 points of presence, 23 100Gb research links, three 100Gb peering links, one 2x100Gb link, and five 10Gb access links.",
     cities: "Cities",
     nodes: "Nodes",
     links: "Links",
@@ -1458,12 +1989,13 @@ const translations = {
     selectedHint: "Click a network line to view its capacity.",
     routeConnector: "to",
     capacityLine: "Capacity",
+    addressLabel: "Address",
     activeSummary: "12 x 100Gb + 1 x 1Gb",
     plovdivActiveSummary: "3 x 100Gb + 2 x 10Gb",
     shumenActiveSummary: "3 x 100Gb + 1 x 10Gb",
     velikoTurnovoActiveSummary: "3 x 100Gb + 1 x 10Gb",
     varnaActiveSummary: "6 x 100Gb + 1 x 10Gb",
-    sofiaActiveSummary: "24 x 100Gb + 3 x 100Gb peering + 1 x 2x100Gb + 5 x 10Gb",
+    sofiaActiveSummary: "23 x 100Gb + 3 x 100Gb peering + 1 x 2x100Gb + 5 x 10Gb",
     node: "node",
     academicNode: "Research node",
     website: "Website",
@@ -1476,6 +2008,55 @@ const translations = {
       "Note: This is an approximate visualization at a logical level and this map does not claim to be reliable in distances or actual implementation of routes, but only aims to give a general idea of the network topology"
   },
   bg: {
+    blagoevgradPageTitle: "Благоевград - оптичен изследователски достъп",
+    plevenPageTitle: "Плевен - оптичен изследователски достъп",
+    gabrovoPageTitle: "Габрово - оптичен изследователски достъп",
+    svishtovPageTitle: "Свищов - оптичен изследователски достъп",
+    rusePageTitle: "Русе - оптичен изследователски достъп",
+    slivenPageTitle: "Сливен - оптичен изследователски достъп",
+    dolnaMitropoliaPageTitle: "Долна Митрополия - оптичен изследователски достъп",
+    blagoevgradHeading: "Благоевград - оптичен изследователски достъп",
+    plevenHeading: "Плевен - оптичен изследователски достъп",
+    gabrovoHeading: "Габрово - оптичен изследователски достъп",
+    svishtovHeading: "Свищов - оптичен изследователски достъп",
+    ruseHeading: "Русе - оптичен изследователски достъп",
+    slivenHeading: "Сливен - оптичен изследователски достъп",
+    dolnaMitropoliaHeading: "Долна Митрополия - оптичен изследователски достъп",
+    blagoevgradMapAria: "Интерактивна карта на Благоевград - оптичен изследователски достъп",
+    plevenMapAria: "Интерактивна карта на Плевен - оптичен изследователски достъп",
+    gabrovoMapAria: "Интерактивна карта на Габрово - оптичен изследователски достъп",
+    svishtovMapAria: "Интерактивна карта на Свищов - оптичен изследователски достъп",
+    ruseMapAria: "Интерактивна карта на Русе - оптичен изследователски достъп",
+    slivenMapAria: "Интерактивна карта на Сливен - оптичен изследователски достъп",
+    dolnaMitropoliaMapAria: "Интерактивна карта на Долна Митрополия - оптичен изследователски достъп",
+    blagoevgradMapTitle: "Благоевград - оптичен изследователски достъп",
+    plevenMapTitle: "Плевен - оптичен изследователски достъп",
+    gabrovoMapTitle: "Габрово - оптичен изследователски достъп",
+    svishtovMapTitle: "Свищов - оптичен изследователски достъп",
+    ruseMapTitle: "Русе - оптичен изследователски достъп",
+    slivenMapTitle: "Сливен - оптичен изследователски достъп",
+    dolnaMitropoliaMapTitle: "Долна Митрополия - оптичен изследователски достъп",
+    blagoevgradMapDescription:
+      "Градска карта на Благоевград с ЮЗУ, областната администрация, две 100Gb връзки и една 1Gb бекъп интернет връзка.",
+    plevenMapDescription:
+      "Градска карта на Плевен с Медицински университет - Плевен, областната администрация, две 100Gb връзки и една 10Gb бекъп интернет връзка.",
+    gabrovoMapDescription:
+      "Градска карта на Габрово с Технически университет - Габрово, областната администрация, две 100Gb връзки и една 10Gb бекъп интернет връзка.",
+    svishtovMapDescription:
+      "Градска карта на Свищов със Стопанска академия, общината, две 100Gb връзки и една 1Gb бекъп интернет връзка.",
+    ruseMapDescription:
+      "Градска карта на Русе с Русенски университет, областната администрация, две 100Gb връзки и една 10Gb бекъп интернет връзка.",
+    slivenMapDescription:
+      "Градска карта на Сливен с ТУ-София, Факултет и Колеж - Сливен и областната администрация, свързани с една 100Gb връзка.",
+    dolnaMitropoliaMapDescription:
+      "Градска карта на Долна Митрополия с ВВВУ, свързано към общината и ОА-Плевен с две 100Gb връзки.",
+    blagoevgradActiveSummary: "2 x 100Gb + 1 x 1Gb",
+    plevenActiveSummary: "2 x 100Gb + 1 x 10Gb",
+    gabrovoActiveSummary: "2 x 100Gb + 1 x 10Gb",
+    svishtovActiveSummary: "2 x 100Gb + 1 x 1Gb",
+    ruseActiveSummary: "2 x 100Gb + 1 x 10Gb",
+    slivenActiveSummary: "1 x 100Gb",
+    dolnaMitropoliaActiveSummary: "2 x 100Gb + 1 x 10Gb",
     pageTitle: "България - оптична изследователска магистрала",
     plovdivPageTitle: "Пловдив - оптичен изследователски пръстен",
     shumenPageTitle: "Шумен - оптичен изследователски пръстен",
@@ -1512,7 +2093,7 @@ const translations = {
     varnaMapDescription:
       "Градска карта на Варна със седем точки на присъствие, шест 100Gb връзки между основните институции и една 10Gb интернет връзка от ВВМУ към Бекъп интернет.",
     sofiaMapDescription:
-      "Градска карта на София с 26 точки на присъствие, 24 изследователски 100Gb връзки, три 100Gb пиъринг връзки, една 2x100Gb връзка и пет 10Gb връзки.",
+      "Градска карта на София с 26 точки на присъствие, 23 изследователски 100Gb връзки, три 100Gb пиъринг връзки, една 2x100Gb връзка и пет 10Gb връзки.",
     cities: "Града",
     nodes: "Възела",
     links: "Връзки",
@@ -1538,12 +2119,13 @@ const translations = {
     selectedHint: "Натиснете линия от мрежата, за да видите капацитета.",
     routeConnector: "към",
     capacityLine: "Капацитет",
+    addressLabel: "Адрес",
     activeSummary: "12 x 100Gb + 1 x 1Gb",
     plovdivActiveSummary: "3 x 100Gb + 2 x 10Gb",
     shumenActiveSummary: "3 x 100Gb + 1 x 10Gb",
     velikoTurnovoActiveSummary: "3 x 100Gb + 1 x 10Gb",
     varnaActiveSummary: "6 x 100Gb + 1 x 10Gb",
-    sofiaActiveSummary: "24 x 100Gb + 3 x 100Gb пиъринг + 1 x 2x100Gb + 5 x 10Gb",
+    sofiaActiveSummary: "23 x 100Gb + 3 x 100Gb пиъринг + 1 x 2x100Gb + 5 x 10Gb",
     node: "възел",
     academicNode: "Изследователски възел",
     website: "Уеб сайт",
@@ -1577,6 +2159,20 @@ const metricValues = document.querySelectorAll(".metric-value");
 const metricLabels = document.querySelectorAll(".metric-label");
 
 const cityByName = new Map(cities.map((city) => [city.name, city]));
+const cityDetailViewByName = {
+  Sofia: "sofia",
+  Plovdiv: "plovdiv",
+  Shumen: "shumen",
+  "Veliko Turnovo": "velikoTurnovo",
+  Varna: "varna",
+  Blagoevgrad: "blagoevgrad",
+  Sliven: "sliven",
+  Ruse: "ruse",
+  Svishtov: "svishtov",
+  Gabrovo: "gabrovo",
+  Pleven: "pleven",
+  "Dolna Mitropolia": "dolnaMitropolia"
+};
 const linkElements = new Map();
 const cityElements = new Map();
 
@@ -1666,6 +2262,10 @@ function displayDetailLabel(nodeId) {
 }
 
 function detailLabelOffset(node) {
+  if (currentLanguage === "bg" && node.labelBgOffset) {
+    return node.labelBgOffset;
+  }
+
   return currentLanguage === "en" && node.labelEn ? node.labelEn : node.label;
 }
 
@@ -1675,16 +2275,10 @@ function detailLabelAnchor(node, labelOffset) {
 
 function activateCity(city) {
   clearSelection();
-  if (city.name === "Sofia") {
-    showSofiaMap();
-  } else if (city.name === "Plovdiv") {
-    showPlovdivMap();
-  } else if (city.name === "Shumen") {
-    showShumenMap();
-  } else if (city.name === "Veliko Turnovo") {
-    showVelikoTurnovoMap();
-  } else if (city.name === "Varna") {
-    showVarnaMap();
+  const detailViewName = cityDetailViewByName[city.name];
+
+  if (detailViewName) {
+    showDetailMap(detailViewName);
   } else {
     showCityPopup(city.name);
   }
@@ -1712,6 +2306,11 @@ function setSvgTextLines(element, lines) {
 }
 
 function detailNodeTypeClass(nodeId) {
+  const node = isCityDetailView() ? currentDetailNodeById().get(nodeId) : null;
+  if (node?.type) {
+    return node.type;
+  }
+
   if (
     nodeId === "regional-admin" ||
     nodeId === "sh-regional-admin" ||
@@ -1875,6 +2474,26 @@ function isBorderArcLink(link) {
 
 function linkPathD(link, offset = 0) {
   const { from, to } = getLinkPoints(link);
+
+  if (Number.isFinite(link.routeCurve)) {
+    const dx = to.x - from.x;
+    const dy = to.y - from.y;
+    const length = Math.hypot(dx, dy) || 1;
+    const normalX = -dy / length;
+    const normalY = dx / length;
+    const startX = from.x + normalX * offset;
+    const startY = from.y + normalY * offset;
+    const endX = to.x + normalX * offset;
+    const endY = to.y + normalY * offset;
+    const controlX = (from.x + to.x) / 2 + normalX * (link.routeCurve + offset);
+    const controlY = (from.y + to.y) / 2 + normalY * (link.routeCurve + offset);
+
+    return [
+      `M ${formatPointValue(startX)} ${formatPointValue(startY)}`,
+      `Q ${formatPointValue(controlX)} ${formatPointValue(controlY)}`,
+      `${formatPointValue(endX)} ${formatPointValue(endY)}`
+    ].join(" ");
+  }
 
   if (currentView === "plovdiv" && link.id === "pd-agrarian-admin") {
     const controlA = {
@@ -2040,8 +2659,9 @@ function linkPathD(link, offset = 0) {
   const dx = to.x - from.x;
   const dy = to.y - from.y;
   const length = Math.hypot(dx, dy) || 1;
-  const normalX = (-dy / length) * offset;
-  const normalY = (dx / length) * offset;
+  const adjustedOffset = offset + (link.routeOffset ?? 0);
+  const normalX = (-dy / length) * adjustedOffset;
+  const normalY = (dx / length) * adjustedOffset;
 
   return [
     `M ${formatPointValue(from.x + normalX)} ${formatPointValue(from.y + normalY)}`,
@@ -2305,7 +2925,7 @@ function showCityPopup(cityName) {
   } else {
     cityPopup.innerHTML = `
       <button class="popup-close" type="button" aria-label="${t("close")}">×</button>
-      <img class="popup-image" src="${details.image}" alt="" loading="lazy" />
+      <img class="popup-image" src="${details.image}" alt="" loading="lazy" onerror="this.onerror=null;this.src='${fallbackPopupImage}'" />
       <div>
         <p class="popup-kicker">${t("academicNode")}</p>
         <h3>${details.name[currentLanguage]}</h3>
@@ -2334,16 +2954,25 @@ function showCityPopup(cityName) {
 
 function showDetailNodePopup(nodeId) {
   const details = currentDetailNodeDetails()[nodeId];
+  const node = currentDetailNodeById().get(nodeId);
   const point = svgPointToStage(activePointGetter(nodeId));
+  const addressRow =
+    simpleAccessViews[currentView] && node?.address && node.type !== "backup-node"
+      ? `<div>
+          <dt>${t("addressLabel")}</dt>
+          <dd>${node.address}</dd>
+        </div>`
+      : "";
   activePopupCity = nodeId;
 
   cityPopup.innerHTML = `
     <button class="popup-close" type="button" aria-label="${t("close")}">×</button>
-    <img class="popup-image" src="${details.image}" alt="" loading="lazy" />
+    <img class="popup-image" src="${details.image}" alt="" loading="lazy" onerror="this.onerror=null;this.src='${fallbackPopupImage}'" />
     <div>
       <p class="popup-kicker">${displayPointName(nodeId)}</p>
       <h3>${details.name[currentLanguage]}</h3>
       <dl class="popup-meta">
+        ${addressRow}
         <div>
           <dt>${t("website")}</dt>
           <dd><a href="${details.website}" target="_blank" rel="noreferrer">${details.website}</a></dd>
@@ -2421,31 +3050,32 @@ function updateLinkAriaLabels() {
 }
 
 function renderReturnMapIcon() {
-  const miniBounds = bulgariaOutline.reduce(
-    (acc, [lng, lat]) => ({
-      minLng: Math.min(acc.minLng, lng),
-      maxLng: Math.max(acc.maxLng, lng),
-      minLat: Math.min(acc.minLat, lat),
-      maxLat: Math.max(acc.maxLat, lat)
+  const projectedOutline = bulgariaOutline.map(([lng, lat]) => project(lng, lat));
+  const miniBounds = projectedOutline.reduce(
+    (acc, point) => ({
+      minX: Math.min(acc.minX, point.x),
+      maxX: Math.max(acc.maxX, point.x),
+      minY: Math.min(acc.minY, point.y),
+      maxY: Math.max(acc.maxY, point.y)
     }),
-    { minLng: Infinity, maxLng: -Infinity, minLat: Infinity, maxLat: -Infinity }
+    { minX: Infinity, maxX: -Infinity, minY: Infinity, maxY: -Infinity }
   );
-  const width = 64;
-  const height = 42;
+  const width = 94;
+  const height = 58;
   const margin = 3;
   const scale = Math.min(
-    (width - margin * 2) / (miniBounds.maxLng - miniBounds.minLng),
-    (height - margin * 2) / (miniBounds.maxLat - miniBounds.minLat)
+    (width - margin * 2) / (miniBounds.maxX - miniBounds.minX),
+    (height - margin * 2) / (miniBounds.maxY - miniBounds.minY)
   );
-  const drawnWidth = (miniBounds.maxLng - miniBounds.minLng) * scale;
-  const drawnHeight = (miniBounds.maxLat - miniBounds.minLat) * scale;
+  const drawnWidth = (miniBounds.maxX - miniBounds.minX) * scale;
+  const drawnHeight = (miniBounds.maxY - miniBounds.minY) * scale;
   const offsetX = (width - drawnWidth) / 2;
   const offsetY = (height - drawnHeight) / 2;
 
-  const d = bulgariaOutline
-    .map(([lng, lat], index) => {
-      const x = offsetX + (lng - miniBounds.minLng) * scale;
-      const y = offsetY + (miniBounds.maxLat - lat) * scale;
+  const d = projectedOutline
+    .map((point, index) => {
+      const x = offsetX + (point.x - miniBounds.minX) * scale;
+      const y = offsetY + (point.y - miniBounds.minY) * scale;
       return `${index === 0 ? "M" : "L"} ${x.toFixed(1)} ${y.toFixed(1)}`;
     })
     .join(" ")
@@ -2463,6 +3093,7 @@ function renderLegend() {
     const hasPeering = activeLinks.some((link) => link.type === "peering");
     const hasStandard10 = activeLinks.some((link) => link.capacityGb === 10 && !commodityLinkIds.has(link.id));
     const hasCommodity10 = activeLinks.some((link) => commodityLinkIds.has(link.id));
+    const hasOneGb = activeLinks.some((link) => link.capacityGb === 1);
     const detailNodeTypes = new Set(currentDetailNodes().map((node) => detailNodeTypeClass(node.id)));
     const twoHundredGbRow = has200
       ? `<div class="legend-row">
@@ -2490,6 +3121,12 @@ function renderLegend() {
         </div>`
         : ""
     ].join("");
+    const oneGbRow = hasOneGb
+      ? `<div class="legend-row">
+          <span class="legend-line legend-1" aria-hidden="true"></span>
+          <span>${t("legend1")}</span>
+        </div>`
+      : "";
     const nodeRows = [
       detailNodeTypes.has("state-network-node")
         ? `<div class="legend-row">
@@ -2532,6 +3169,7 @@ function renderLegend() {
         </div>
         ${peeringRow}
         ${tenGbRows}
+        ${oneGbRow}
       </div>
       <div class="legend-column">
         ${nodeRows}

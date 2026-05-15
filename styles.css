@@ -451,8 +451,8 @@ h2 {
   z-index: 7;
   display: grid;
   place-items: center;
-  width: 78px;
-  height: 56px;
+  width: 102px;
+  height: 64px;
   padding: 0;
   background: transparent;
   border: 0;
@@ -467,13 +467,13 @@ h2 {
 .return-map-icon {
   display: grid;
   place-items: center;
-  width: 72px;
-  height: 50px;
+  width: 94px;
+  height: 58px;
 }
 
 .return-map-icon svg {
-  width: 72px;
-  height: 50px;
+  width: 94px;
+  height: 58px;
 }
 
 .return-map-icon path {

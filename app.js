@@ -773,7 +773,7 @@ const sofiaNodes = [
     address: "ул. Гурко 26",
     lat: 42.6934644,
     lng: 23.3249726,
-    label: [-20, -8],
+    label: [-8, 22],
     labelEn: [-20, 22],
     anchor: "end"
   },
@@ -858,7 +858,7 @@ const sofiaNodes = [
     address: "ул. Георги Софийски 1",
     lat: 42.6866461,
     lng: 23.3092818,
-    label: [22, -16],
+    label: [34, 14],
     anchor: "start"
   },
   {
@@ -870,7 +870,7 @@ const sofiaNodes = [
     address: "бул. Цар Освободител 15",
     lat: 42.6956732,
     lng: 23.331538,
-    label: [-18, -14],
+    label: [-6, -34],
     anchor: "end"
   },
   {
@@ -966,8 +966,8 @@ const sofiaNodes = [
     address: "ул. Йорданка Филаретова 3",
     lat: 42.6928255,
     lng: 23.3080473,
-    label: [24, -10],
-    labelEn: [9, -25],
+    label: [9, -40],
+    labelEn: [0, -40],
     anchor: "start"
   },
   {
@@ -1095,6 +1095,7 @@ const sofiaLinks = [
   { id: "so-vtu-su", from: "so-vtu", to: "so-sofia-university", capacityGb: 100 },
   { id: "so-su-art", from: "so-sofia-university", to: "so-art-academy", capacityGb: 100 },
   { id: "so-art-military", from: "so-art-academy", to: "so-military-academy", capacityGb: 100 },
+  { id: "so-su-mu", from: "so-sofia-university", to: "so-mu-sofia", capacityGb: 100, routeCurve: 90 },
   { id: "so-mu-fmi", from: "so-mu-sofia", to: "so-fmi", capacityGb: 100 },
   { id: "so-fmi-gate", from: "so-fmi", to: "so-gate", capacityGb: 100 },
   { id: "so-fmi-unwe", from: "so-fmi", to: "so-unwe", capacityGb: 100 },
@@ -1963,7 +1964,7 @@ const translations = {
     varnaMapDescription:
       "Varna city map with seven points of presence, six 100Gb links between the main institutions, and one 10Gb commodity link from the Naval Academy to Backup internet.",
     sofiaMapDescription:
-      "Sofia city map with 26 points of presence, 23 100Gb research links, three 100Gb peering links, one 2x100Gb link, and five 10Gb access links.",
+      "Sofia city map with 26 points of presence, 24 100Gb research links, three 100Gb peering links, one 2x100Gb link, and five 10Gb access links.",
     cities: "Cities",
     nodes: "Nodes",
     links: "Links",
@@ -1995,7 +1996,7 @@ const translations = {
     shumenActiveSummary: "3 x 100Gb + 1 x 10Gb",
     velikoTurnovoActiveSummary: "3 x 100Gb + 1 x 10Gb",
     varnaActiveSummary: "6 x 100Gb + 1 x 10Gb",
-    sofiaActiveSummary: "23 x 100Gb + 3 x 100Gb peering + 1 x 2x100Gb + 5 x 10Gb",
+    sofiaActiveSummary: "24 x 100Gb + 3 x 100Gb peering + 1 x 2x100Gb + 5 x 10Gb",
     node: "node",
     academicNode: "Research node",
     website: "Website",
@@ -2093,7 +2094,7 @@ const translations = {
     varnaMapDescription:
       "Градска карта на Варна със седем точки на присъствие, шест 100Gb връзки между основните институции и една 10Gb интернет връзка от ВВМУ към Бекъп интернет.",
     sofiaMapDescription:
-      "Градска карта на София с 26 точки на присъствие, 23 изследователски 100Gb връзки, три 100Gb пиъринг връзки, една 2x100Gb връзка и пет 10Gb връзки.",
+      "Градска карта на София с 26 точки на присъствие, 24 изследователски 100Gb връзки, три 100Gb пиъринг връзки, една 2x100Gb връзка и пет 10Gb връзки.",
     cities: "Града",
     nodes: "Възела",
     links: "Връзки",
@@ -2125,7 +2126,7 @@ const translations = {
     shumenActiveSummary: "3 x 100Gb + 1 x 10Gb",
     velikoTurnovoActiveSummary: "3 x 100Gb + 1 x 10Gb",
     varnaActiveSummary: "6 x 100Gb + 1 x 10Gb",
-    sofiaActiveSummary: "23 x 100Gb + 3 x 100Gb пиъринг + 1 x 2x100Gb + 5 x 10Gb",
+    sofiaActiveSummary: "24 x 100Gb + 3 x 100Gb пиъринг + 1 x 2x100Gb + 5 x 10Gb",
     node: "възел",
     academicNode: "Изследователски възел",
     website: "Уеб сайт",
@@ -2582,19 +2583,6 @@ function linkPathD(link, offset = 0) {
     const control = {
       x: (from.x + to.x) / 2,
       y: (from.y + to.y) / 2 + 28
-    };
-
-    return [
-      `M ${formatPointValue(from.x)} ${formatPointValue(from.y + offset)}`,
-      `Q ${formatPointValue(control.x)} ${formatPointValue(control.y + offset)}`,
-      `${formatPointValue(to.x)} ${formatPointValue(to.y + offset)}`
-    ].join(" ");
-  }
-
-  if (currentView === "sofia" && link.id === "so-military-mu") {
-    const control = {
-      x: (from.x + to.x) / 2,
-      y: (from.y + to.y) / 2 + 42
     };
 
     return [

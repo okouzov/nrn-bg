@@ -1133,7 +1133,7 @@ const sofiaNodeDetails = {
       bg: "Институт по информационни и комуникационни технологии - БАН"
     },
     website: "https://www.iict.bas.bg/",
-    image: fallbackPopupImage
+    image: "assets/iikt-logo.jpeg"
   },
   "so-tu-sofia": {
     name: {

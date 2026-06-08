@@ -1157,7 +1157,7 @@ const sofiaNodeDetails = {
       bg: "Висше училище по телекомуникации и пощи"
     },
     website: "https://www.utp.bg/",
-    image: fallbackPopupImage
+    image: "assets/vutp-logo.png"
   },
   "so-unwe": {
     name: {
@@ -1197,7 +1197,7 @@ const sofiaNodeDetails = {
       bg: "ВТУ Тодор Каблешков"
     },
     website: "https://www.vtu.bg/",
-    image: fallbackPopupImage
+    image: "assets/vtu-logo.gif"
   },
   "so-unibit-1": {
     name: {

@@ -6,8 +6,8 @@ const cities = [
   { name: "Blagoevgrad", bg: "Благоевград", lat: 42.0209, lng: 23.0943, label: [34, 30] },
   { name: "Plovdiv", bg: "Пловдив", lat: 42.1354, lng: 24.7453, label: [-18, -24] },
   { name: "Sliven", bg: "Сливен", lat: 42.6817, lng: 26.3229, label: [0, 31] },
-  { name: "Shumen", bg: "Шумен", lat: 43.2712, lng: 26.9361, label: [0, -24] },
-  { name: "Varna", bg: "Варна", lat: 43.2141, lng: 27.9147, label: [-14, 24] },
+  { name: "Varna", bg: "Варна", lat: 43.2141, lng: 27.9147, label: [0, -26] },
+  { name: "Shumen", bg: "Шумен", lat: 43.2712, lng: 26.9361, label: [16, -24] },
   { name: "Ruse", bg: "Русе", lat: 43.8356, lng: 25.9657, label: [0, -25] },
   { name: "Svishtov", bg: "Свищов", lat: 43.6187, lng: 25.3506, label: [-5, -24] },
   { name: "Veliko Turnovo", bg: "Велико Търново", lat: 43.0757, lng: 25.6172, label: [65, -18], labelEn: [57, -18] },
@@ -1954,7 +1954,7 @@ const translations = {
     varnaMapTitle: "Varna - optical research ring",
     sofiaMapTitle: "Sofia - optical research ring",
     mapDescription:
-      "Sofia connects through Blagoevgrad, Plovdiv, Sliven, Shumen, Varna, Ruse, Svishtov, Veliko Turnovo, Gabrovo, Pleven, Dolna Mitropolia, and back to Sofia. Rozhen connects to Plovdiv at 1Gb.",
+      "Sofia connects through Blagoevgrad, Plovdiv, Sliven, Varna, Shumen, Ruse, Svishtov, Veliko Turnovo, Gabrovo, Pleven, Dolna Mitropolia, and back to Sofia. Rozhen connects to Plovdiv at 1Gb.",
     plovdivMapDescription:
       "Plovdiv city map with five academic network nodes, three 100Gb links, and two 10Gb links from TU-Sofia, Plovdiv Branch.",
     shumenMapDescription:
@@ -2084,7 +2084,7 @@ const translations = {
     varnaMapTitle: "Варна - оптичен изследователски пръстен",
     sofiaMapTitle: "София - оптичен изследователски пръстен",
     mapDescription:
-      "София се свързва през Благоевград, Пловдив, Сливен, Шумен, Варна, Русе, Свищов, Велико Търново, Габрово, Плевен, Долна Митрополия и обратно към София. Рожен е свързан към Пловдив с 1Gb.",
+      "София се свързва през Благоевград, Пловдив, Сливен, Варна, Шумен, Русе, Свищов, Велико Търново, Габрово, Плевен, Долна Митрополия и обратно към София. Рожен е свързан към Пловдив с 1Gb.",
     plovdivMapDescription:
       "Градска карта на Пловдив с пет академични възела, три 100Gb връзки и две 10Gb връзки от ТУ-София, филиал Пловдив.",
     shumenMapDescription:

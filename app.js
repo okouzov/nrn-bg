@@ -615,8 +615,8 @@ const varnaNodes = [
     address: 'ул. "Студентска" 1',
     lat: 43.2240631,
     lng: 27.9357045,
-    label: [22, -23],
-    anchor: "start"
+    label: [-6, -35],
+    anchor: "middle"
   },
   {
     id: "va-economics-university",
@@ -674,7 +674,7 @@ const varnaLinks = [
   { id: "va-tu-economics", from: "va-technical-university", to: "va-economics-university", capacityGb: 100 },
   { id: "va-economics-admin", from: "va-economics-university", to: "va-regional-admin", capacityGb: 100 },
   { id: "va-naval-medical", from: "va-naval-academy", to: "va-medical-university", capacityGb: 100 },
-  { id: "va-naval-free", from: "va-naval-academy", to: "va-free-university", capacityGb: 100 },
+  { id: "va-tu-free", from: "va-technical-university", to: "va-free-university", capacityGb: 100 },
   { id: "va-naval-backup", from: "va-naval-academy", to: "va-backup-internet", capacityGb: 10 }
 ];
 
